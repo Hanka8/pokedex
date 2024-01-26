@@ -4,7 +4,7 @@ export default function pokemonList({ pokemonData}) {
   return (
     <div className='pokedex-box'>
        {pokemonData.map(pokemon => (
-          <div className='pokemon-box' key={pokemon.id}>
+          <div className='pokemon-box' key={pokemon.name}>
             <img src={pokemon.img} alt={pokemon.name}/>
             <p>{pokemon.name}</p>
           </div>

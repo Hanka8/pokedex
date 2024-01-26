@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 import PokemonList from './PokemonList';
 
 import Pagination from '@mui/material/Pagination';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import NativeSelect from '@mui/material/NativeSelect';
@@ -51,7 +49,7 @@ function App() {
     .catch(error => {
       console.error('Error:', error.message);
     });
-}, [currentPage, resultsPerPage]);
+  }, [currentPage, resultsPerPage]);
 
 
   function handlePageChange(event, newPage) {
@@ -61,6 +59,8 @@ function App() {
   function handleResultsPerPageChange(event) {
     setResultsPerPage(event.target.value);
   }
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
