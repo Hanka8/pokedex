@@ -1,49 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import PokemonList from './PokemonList'
-import axios from 'axios'
-import Pagination from './Pagination';
 import './App.css';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import PokemonList from './PokemonList';
 
-function App() {
-  const [pokemon, setPokemon] = useState([])
-  const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon")
-  const [nextPageUrl, setNextPageUrl] = useState()
-  const [prevPageUrl, setPrevPageUrl] = useState()
-  const [loading, setLoading] = useState(true)
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
+function App() { 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const [pokemonData, setPokemonData] = useState([]);
 
   useEffect(() => {
-    setLoading(true)
-    let cancel
-    axios.get(currentPageUrl, {
-      cancelToken: new axios.CancelToken(c => cancel = c)
-    }).then(res => {
-      setLoading(false)
-      setNextPageUrl(res.data.next)
-      setPrevPageUrl(res.data.previous)
-      setPokemon(res.data.results.map(p => p.name))
+  setLoading(true);
+
+  axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${(currentPage - 1) * 20}&limit=20`)
+    .then(res => {
+      setLoading(false);
+      setTotalPages(Math.ceil(res.data.count / 20));
+
+      // Use Promise.all to wait for all Pokemon details requests
+      const pokemonDetailsPromises = res.data.results.map(p =>
+        axios.get(p.url)
+          .then(res => ({
+            name: res.data.name,
+            img: res.data.sprites.front_default,
+          }))
+          .catch(error => {
+            console.error('Error:', error.message);
+            return null;
+          })
+      );
+
+      Promise.all(pokemonDetailsPromises)
+        .then(pokemonDetails => {
+          // Filter out any failed requests
+          const validPokemonDetails = pokemonDetails.filter(details => details !== null);
+          setPokemonData(validPokemonDetails);
+        })
+        .catch(error => {
+          console.error('Error fetching Pokemon details:', error.message);
+        });
     })
+    .catch(error => {
+      console.error('Error:', error.message);
+    });
+}, [currentPage]);
 
-    return () => cancel
-  }, [currentPageUrl])
 
-  function gotoNextPage() {
-    setCurrentPageUrl(nextPageUrl)
+  function handlePageChange(event, newPage) {
+    setCurrentPage(newPage);
   }
 
-  function gotoPrevPage() {
-    setCurrentPageUrl(prevPageUrl)
-  }
+  if (loading) return "Loading...";
 
-  if (loading) return "Loading..."
-  
   return (
-    <main>
-      <PokemonList pokemon={pokemon} />
-      <Pagination
-        gotoNextPage={nextPageUrl ? gotoNextPage : null}
-        gotoPrevPage={prevPageUrl ? gotoPrevPage : null}
+    <>
+      <PokemonList 
+        pokemonData={pokemonData} 
       />
-    </main>
+
+      <Stack spacing={2} mt={2}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </Stack>
+    </>
   );
 }
 

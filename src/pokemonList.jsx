@@ -1,12 +1,15 @@
 import React from 'react'
-import App from './App'
 
-export default function pokemonList({ pokemon }) {
+export default function pokemonList({ pokemonData}) {
   return (
     <div className='pokedex-box'>
-       {pokemon.map(p => (
-        <div className='pokedex-card' key={p}>{p}</div>
-       ))}
+       {pokemonData.map(pokemon => (
+          <div className='pokemon-box' key={pokemon.id}>
+            <img src={pokemon.img} alt={pokemon.name}/>
+            <p>{pokemon.name}</p>
+          </div>
+       ))
+       }
     </div>
   )
 }
