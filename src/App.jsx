@@ -2,6 +2,7 @@ import './App.css';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import PokemonList from './PokemonList';
+import Loading from './Loading';
 
 import Pagination from '@mui/material/Pagination';
 import FormControl from '@mui/material/FormControl';
@@ -60,10 +61,11 @@ function App() {
     setResultsPerPage(event.target.value);
   }
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
 
   return (
     <>
+    <div className='header'></div>
     <FormControl sx={{ m: 1, minWidth: 220 }} size="small">
       <InputLabel variant="standard" htmlFor="uncontrolled-native">
         Results per page
