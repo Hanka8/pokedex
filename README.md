@@ -1,4 +1,4 @@
-#simple pokedex app for learning purposes
+# simple pokedex app for learning purposes
 
 **learning outcomes**
 1) useEffect for axios request
