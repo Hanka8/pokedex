@@ -113,19 +113,25 @@ main {
   }
 }
 
-@media screen and (max-width: 1024px){
+@media screen and (max-width: 1024px) {
   .pokedex-box {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px){
+  .pokedex-box {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
   .pokedex-box {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 420px) {
   .pokedex-box {
     grid-template-columns: 1fr;
   }

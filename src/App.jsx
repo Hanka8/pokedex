@@ -21,7 +21,6 @@ function App() {
 
   axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${(currentPage - 1) * resultsPerPage}&limit=${resultsPerPage}`)
     .then(res => {
-      setLoading(false);
       setTotalPages(Math.ceil(res.data.count / resultsPerPage));
 
       // Use Promise.all to wait for all Pokemon details requests
@@ -42,7 +41,9 @@ function App() {
           // Filter out any failed requests
           const validPokemonDetails = pokemonDetails.filter(details => details !== null);
           setPokemonData(validPokemonDetails);
+          setLoading(false);
         })
+
         .catch(error => {
           console.error('Error fetching Pokemon details:', error.message);
         });
@@ -71,7 +72,7 @@ function App() {
         Results per page
       </InputLabel>
       <NativeSelect
-        defaultValue={20}
+        defaultValue={resultsPerPage}
         inputProps={{
           name: 'age',
           id: 'uncontrolled-native',
